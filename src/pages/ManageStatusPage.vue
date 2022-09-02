@@ -2,17 +2,17 @@
     <transition name="slide-fade" appear>
         <div>
             <h1 class="mb-3">
-                {{ $t("Status Pages") }}
+                {{ $t("Pages de Statut") }}
             </h1>
 
             <div>
-                <router-link to="/add-status-page" class="btn btn-primary mb-3"><font-awesome-icon icon="plus" /> {{ $t("New Status Page") }}</router-link>
+                <router-link to="/add-status-page" class="btn btn-primary mb-3"><font-awesome-icon icon="plus" /> {{ $t("Nouvelle Page de Statut") }}</router-link>
             </div>
 
             <div class="shadow-box">
                 <template v-if="$root.statusPageListLoaded">
                     <span v-if="Object.keys($root.statusPageList).length === 0" class="d-flex align-items-center justify-content-center my-3">
-                        {{ $t("No status pages") }}
+                        {{ $t("Aucune page de statut") }}
                     </span>
 
                     <!-- use <a> instead of <router-link>, because the heartbeat won't load. -->
