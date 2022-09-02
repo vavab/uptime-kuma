@@ -12,7 +12,7 @@
                 </div>
 
                 <div class="my-3">
-                    <label for="title" class="form-label">{{ $t("Title") }}</label>
+                    <label for="title" class="form-label">{{ $t("Titre") }}</label>
                     <input id="title" v-model="config.title" type="text" class="form-control">
                 </div>
 
@@ -21,27 +21,26 @@
                     <label for="description" class="form-label">{{ $t("Description") }}</label>
                     <textarea id="description" v-model="config.description" class="form-control"></textarea>
                 </div>
-
                 <!-- Footer Text -->
                 <div class="my-3">
-                    <label for="footer-text" class="form-label">{{ $t("Footer Text") }}</label>
+                    <label for="footer-text" class="form-label">{{ $t("Texte de bas de page") }}</label>
                     <textarea id="footer-text" v-model="config.footerText" class="form-control"></textarea>
                 </div>
 
                 <div class="my-3 form-check form-switch">
                     <input id="switch-theme" v-model="config.theme" class="form-check-input" type="checkbox" true-value="dark" false-value="light">
-                    <label class="form-check-label" for="switch-theme">{{ $t("Switch to Dark Theme") }}</label>
+                    <label class="form-check-label" for="switch-theme">{{ $t("Passer au thème sombre") }}</label>
                 </div>
 
                 <div class="my-3 form-check form-switch">
                     <input id="showTags" v-model="config.showTags" class="form-check-input" type="checkbox">
-                    <label class="form-check-label" for="showTags">{{ $t("Show Tags") }}</label>
+                    <label class="form-check-label" for="showTags">{{ $t("Afficher les Tags") }}</label>
                 </div>
 
                 <!-- Show Powered By -->
                 <div class="my-3 form-check form-switch">
                     <input id="show-powered-by" v-model="config.showPoweredBy" class="form-check-input" type="checkbox">
-                    <label class="form-check-label" for="show-powered-by">{{ $t("Show Powered By") }}</label>
+                    <label class="form-check-label" for="show-powered-by">{{ $t("Afficher le 'Powered By'") }}</label>
                 </div>
 
                 <div v-if="false" class="my-3">
@@ -52,7 +51,7 @@
                 <!-- Domain Name List -->
                 <div class="my-3">
                     <label class="form-label">
-                        {{ $t("Domain Names") }}
+                        {{ $t("Noms de domaine") }}
                         <font-awesome-icon icon="plus-circle" class="btn-add-domain action text-primary" @click="addDomainField" />
                     </label>
 
@@ -66,14 +65,14 @@
 
                 <!-- Custom CSS -->
                 <div class="my-3">
-                    <div class="mb-1">{{ $t("Custom CSS") }}</div>
+                    <div class="mb-1">{{ $t("Configuration CSS") }}</div>
                     <prism-editor v-model="config.customCSS" class="css-editor" :highlight="highlighter" line-numbers></prism-editor>
                 </div>
 
                 <div class="danger-zone">
                     <button class="btn btn-danger me-2" @click="deleteDialog">
                         <font-awesome-icon icon="trash" />
-                        {{ $t("Delete") }}
+                        {{ $t("Supprimer") }}
                     </button>
                 </div>
             </div>
@@ -82,12 +81,12 @@
             <div class="sidebar-footer">
                 <button class="btn btn-success me-2" @click="save">
                     <font-awesome-icon icon="save" />
-                    {{ $t("Save") }}
+                    {{ $t("Sauvegarder") }}
                 </button>
 
                 <button class="btn btn-danger me-2" @click="discard">
                     <font-awesome-icon icon="undo" />
-                    {{ $t("Discard") }}
+                    {{ $t("Annuler") }}
                 </button>
             </div>
         </div>
@@ -95,83 +94,83 @@
         <!-- Main Status Page -->
         <div :class="{ edit: enableEditMode}" class="main">
             <!-- Logo & Title -->
-            <h1 class="mb-4 title-flex">
-                <!-- Logo -->
-                <span class="logo-wrapper" @click="showImageCropUploadMethod">
-                    <img :src="logoURL" alt class="logo me-2" :class="logoClass" />
-                    <font-awesome-icon v-if="enableEditMode" class="icon-upload" icon="upload" />
-                </span>
+                <h1 class="mb-4 title-flex">
+                    <!-- Logo -->
+                    <span class="logo-wrapper" @click="showImageCropUploadMethod">
+                        <img :src="logoURL" alt class="logo me-2" :class="logoClass" />
+                        <font-awesome-icon v-if="enableEditMode" class="icon-upload" icon="upload" />
+                    </span>
 
-                <!-- Uploader -->
-                <!--    url="/api/status-page/upload-logo" -->
-                <ImageCropUpload
-                    v-model="showImageCropUpload"
-                    field="img"
-                    :width="128"
-                    :height="128"
-                    :langType="$i18n.locale"
-                    img-format="png"
-                    :noCircle="true"
-                    :noSquare="false"
-                    @crop-success="cropSuccess"
-                />
+                    <!-- Uploader -->
+                    <!--    url="/api/status-page/upload-logo" -->
+                    <ImageCropUpload
+                        v-model="showImageCropUpload"
+                        field="img"
+                        :width="200"
+                        :height="200"
+                        :langType="$i18n.locale"
+                        img-format="png"
+                        :noCircle="true"
+                        :noSquare="false"
+                        @crop-success="cropSuccess"
+                    />
 
-                <!-- Title -->
-                <Editable v-model="config.title" tag="span" :contenteditable="editMode" :noNL="true" />
-            </h1>
+                    <!-- Title -->
+                    <Editable v-model="config.title" tag="span" :contenteditable="editMode" :noNL="true" />
+                </h1>
 
             <!-- Admin functions -->
             <div v-if="hasToken" class="mb-4">
                 <div v-if="!enableEditMode">
                     <button class="btn btn-info me-2" @click="edit">
                         <font-awesome-icon icon="edit" />
-                        {{ $t("Edit Status Page") }}
+                        {{ $t("Modifier la page de statut") }}
                     </button>
 
                     <a href="/manage-status-page" class="btn btn-info">
                         <font-awesome-icon icon="tachometer-alt" />
-                        {{ $t("Go to Dashboard") }}
+                        {{ $t("Aller au Dashboard") }}
                     </a>
                 </div>
 
                 <div v-else>
                     <button class="btn btn-primary btn-add-group me-2" @click="createIncident">
                         <font-awesome-icon icon="bullhorn" />
-                        {{ $t("Create Incident") }}
+                        {{ $t("Créer un incident") }}
                     </button>
                 </div>
             </div>
 
             <!-- Incident -->
             <div v-if="incident !== null" class="shadow-box alert mb-4 p-4 incident" role="alert" :class="incidentClass">
-                <strong v-if="editIncidentMode">{{ $t("Title") }}:</strong>
+                <strong v-if="editIncidentMode">{{ $t("Titre") }}:</strong>
                 <Editable v-model="incident.title" tag="h4" :contenteditable="editIncidentMode" :noNL="true" class="alert-heading" />
 
-                <strong v-if="editIncidentMode">{{ $t("Content") }}:</strong>
+                <strong v-if="editIncidentMode">{{ $t("Contenu") }}:</strong>
                 <Editable v-model="incident.content" tag="div" :contenteditable="editIncidentMode" class="content" />
 
                 <!-- Incident Date -->
                 <div class="date mt-3">
-                    {{ $t("Date Created") }}: {{ $root.datetime(incident.createdDate) }} ({{ dateFromNow(incident.createdDate) }})<br />
+                    {{ $t("Date de création") }}: {{ $root.datetime(incident.createdDate) }} ({{ dateFromNow(incident.createdDate) }})<br />
                     <span v-if="incident.lastUpdatedDate">
-                        {{ $t("Last Updated") }}: {{ $root.datetime(incident.lastUpdatedDate) }} ({{ dateFromNow(incident.lastUpdatedDate) }})
+                        {{ $t("Dernière mise à jour") }}: {{ $root.datetime(incident.lastUpdatedDate) }} ({{ dateFromNow(incident.lastUpdatedDate) }})
                     </span>
                 </div>
 
                 <div v-if="editMode" class="mt-3">
                     <button v-if="editIncidentMode" class="btn btn-light me-2" @click="postIncident">
                         <font-awesome-icon icon="bullhorn" />
-                        {{ $t("Post") }}
+                        {{ $t("Poster") }}
                     </button>
 
                     <button v-if="!editIncidentMode && incident.id" class="btn btn-light me-2" @click="editIncident">
                         <font-awesome-icon icon="edit" />
-                        {{ $t("Edit") }}
+                        {{ $t("Modifier") }}
                     </button>
 
                     <button v-if="editIncidentMode" class="btn btn-light me-2" @click="cancelIncident">
                         <font-awesome-icon icon="times" />
-                        {{ $t("Cancel") }}
+                        {{ $t("Annuler") }}
                     </button>
 
                     <div v-if="editIncidentMode" class="dropdown d-inline-block me-2">
@@ -190,32 +189,43 @@
 
                     <button v-if="!editIncidentMode && incident.id" class="btn btn-light me-2" @click="unpinIncident">
                         <font-awesome-icon icon="unlink" />
-                        {{ $t("Unpin") }}
+                        {{ $t("Détacher") }}
                     </button>
                 </div>
+            </div>
+
+            <!-- Description -->
+            <strong v-if="editMode">{{ $t("Description") }}:</strong>
+            <Editable v-model="config.description" :contenteditable="editMode" tag="div" class="mb-4 description" />
+            <!-- Bouton evènements (Minutes Cloud) -->
+            <div class="mb-4">
+                <a href="https://pi.minint.fr/events/" target="_blank" class="btn btn-link">
+                    <font-awesome-icon class="right-space" icon="calendar-check" />
+                    {{ $t(" Consulter les derniers évènements") }}
+                </a>
             </div>
 
             <!-- Overall Status -->
             <div class="shadow-box list  p-4 overall-status mb-4">
                 <div v-if="Object.keys($root.publicMonitorList).length === 0 && loadedData">
                     <font-awesome-icon icon="question-circle" class="ok" />
-                    {{ $t("No Services") }}
+                    {{ $t("Pas de services") }}
                 </div>
 
                 <template v-else>
                     <div v-if="allUp">
                         <font-awesome-icon icon="check-circle" class="ok" />
-                        {{ $t("All Systems Operational") }}
+                        {{ $t("Tous les systèmes sont opérationnels") }}
                     </div>
 
                     <div v-else-if="partialDown">
                         <font-awesome-icon icon="exclamation-circle" class="warning" />
-                        {{ $t("Partially Degraded Service") }}
+                        {{ $t("Service partiellement dégradé") }}
                     </div>
 
                     <div v-else-if="allDown">
                         <font-awesome-icon icon="times-circle" class="danger" />
-                        {{ $t("Degraded Service") }}
+                        {{ $t("Service dégradé") }}
                     </div>
 
                     <div v-else>
@@ -224,9 +234,7 @@
                 </template>
             </div>
 
-            <!-- Description -->
-            <strong v-if="editMode">{{ $t("Description") }}:</strong>
-            <Editable v-model="config.description" :contenteditable="editMode" tag="div" class="mb-4 description" />
+            
 
             <div v-if="editMode" class="mb-4">
                 <div>
@@ -244,7 +252,7 @@
                         </select>
                     </div>
                     <div v-else class="text-center">
-                        {{ $t("No monitors available.") }}  <router-link to="/add">{{ $t("Add one") }}</router-link>
+                        {{ $t("Pas de sonde disponible.") }}  <router-link to="/add">{{ $t("Ajouter une sonde") }}</router-link>
                     </div>
                 </div>
             </div>
@@ -1006,5 +1014,7 @@ footer {
         border: 1px solid $dark-border-color;
     }
 }
+
+
 
 </style>
