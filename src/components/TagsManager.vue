@@ -80,7 +80,7 @@
                                     <template #option="{ option }">
                                         <div
                                             class="mx-2 py-1 px-3 rounded d-inline-flex"
-                                            style="height: 24px; color: white;"
+                                            style="height: 24px; color: black;"
                                             :style="{ backgroundColor: option.color + ' !important' }"
                                         >
                                             <span>{{ option.name }}</span>
@@ -89,7 +89,7 @@
                                     <template #singleLabel="{ option }">
                                         <div
                                             class="py-1 px-3 rounded d-inline-flex"
-                                            style="height: 24px; color: white;"
+                                            style="height: 24px; color: black;"
                                             :style="{ backgroundColor: option.color + ' !important' }"
                                         >
                                             <span>{{ option.name }}</span>
@@ -193,6 +193,10 @@ export default {
                     color: "#7C3AED" },
                 { name: this.$t("Pink"),
                     color: "#DB2777" },
+                { name: this.$t("Description"),
+                    color: "#F3F3F3"},
+                { name: this.$t("Link"),
+                    color: "transparent"},
             ];
         },
         validateDraftTag() {
@@ -272,13 +276,13 @@ export default {
         /**
          * Get colour of text inside the tag
          * @param {Object} option The tag that needs to be displayed.
-         * Defaults to "white" unless the tag has no color, which will
+         * Defaults to "black" unless the tag has no color, which will
          * then return the body color (based on application theme)
          * @returns string
          */
         textColor(option) {
             if (option.color) {
-                return "white";
+                return "black";
             } else {
                 return this.$root.theme === "light" ? "var(--bs-body-color)" : "inherit";
             }
