@@ -1,6 +1,6 @@
 <template>
     <div
-        class="tag-wrapper rounded d-inline-flex"
+        class="tag-wrapper d-inline-flex"
         :class="{ 'px-3': size == 'normal',
                   'py-1': size == 'normal',
                   'm-2': size == 'normal',
@@ -10,7 +10,11 @@
         }"
         :style="{ backgroundColor: item.color, fontSize: size == 'sm' ? '0.7em' : '1em' }"
     >
-        <span class="tag-text">{{ displayText }}</span>
+        <span v-if="!isLink" class="tag-text">{{ displayText }}</span>
+        <a v-if="isLink" :href="displayText" target="_blank" class="btn btn-documentation">
+            <font-awesome-icon class="right-space" icon="file" />
+            {{ $t(" Consulter la documentation") }}
+        </a>
         <span v-if="remove != null" class="ps-1 btn-remove" @click="remove(item)">
             <font-awesome-icon icon="times" />
         </span>
@@ -44,7 +48,14 @@ export default {
             if (this.item.value === "") {
                 return this.item.name;
             } else {
-                return `${this.item.name}: ${this.item.value}`;
+                return `${this.item.value}`;
+            }
+        },
+        isLink() {
+            if (this.item.name === "link") {
+                return true;
+            } else {
+                return false;
             }
         }
     }
@@ -53,8 +64,9 @@ export default {
 
 <style lang="scss" scoped>
 .tag-wrapper {
-    color: white;
+    color: black;
     opacity: 0.85;
+    border-radius: 10px;
 
     .dark & {
         opacity: 1;
@@ -62,10 +74,12 @@ export default {
 }
 
 .tag-text {
-    padding-bottom: 1px !important;
+    padding-bottom: 3px !important;
+    padding-top: 3px !important;
     text-overflow: ellipsis;
     overflow: hidden;
-    white-space: nowrap;
+    white-space: normal;
+    font-size: 13px;
 }
 
 .btn-remove {
