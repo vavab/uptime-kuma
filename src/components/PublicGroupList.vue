@@ -31,45 +31,60 @@
                         item-key="id"
                     >
                         <template #item="monitor">
-                            <div class="item">
-                                <div class="row">
-                                    <div class="col-9 col-md-8 small-padding">
-                                        <div class="info">
-                                            <font-awesome-icon v-if="editMode" icon="arrows-alt-v" class="action drag me-3" />
-                                            <font-awesome-icon v-if="editMode" icon="times" class="action remove me-3" @click="removeMonitor(group.index, monitor.index)" />
-
-                                            <Uptime :monitor="monitor.element" type="24" :pill="true" />
-                                            <a
-                                                v-if="showLink(monitor)"
-                                                :href="monitor.element.url"
-                                                class="item-name"
-                                                target="_blank"
-                                            >
-                                                {{ monitor.element.name }}
-                                            </a>
-                                            <p v-else class="item-name"> {{ monitor.element.name }} </p>
-                                            <span
-                                                v-if="showLink(monitor, true)"
-                                                title="Toggle Clickable Link"
-                                            >
-                                                <font-awesome-icon
-                                                    v-if="editMode"
-                                                    :class="{'link-active': monitor.element.sendUrl, 'btn-link': true}"
-                                                    icon="link" class="action me-3"
-
-                                                    @click="toggleLink(group.index, monitor.index)"
-                                                />
-                                            </span>
+                            <a class="item">
+                                <a class="openlink" href="#">
+                                    <div class="row" @click.prevent="monitor.element.showChart = !monitor.element.showChart">
+                                        <div class="col-8 col-md-7 small-padding">
+                                            <div class="info monitor-title">
+                                                <font-awesome-icon v-if="editMode" icon="arrows-alt-v" class="action drag me-3" />
+                                                <font-awesome-icon v-if="editMode" icon="times" class="action remove me-3" @click="removeMonitor(group.index, monitor.index)" />
+                                                <Uptime :monitor="monitor.element" type="24" :pill="true" />
+                                                    {{ monitor.element.name }}
+                                            </div>
                                         </div>
-                                        <div v-if="showTags" class="tags">
-                                            <Tag v-for="tag in monitor.element.tags" :key="tag" :item="tag" :size="'sm'" />
+                                        <div :key="$root.userHeartbeatBar" class="col-3 col-md-4">
+                                            <HeartbeatBar size="small" :monitor-id="monitor.element.id" />
+                                        </div>
+                                        <div class="col-1 col-md-1">
+                                            <div class="info">
+                                                <font-awesome-icon v-if="!monitor.element.showChart" icon="sort-down" class="sort" />
+                                                <font-awesome-icon v-if="monitor.element.showChart" icon="sort-up" class="sort" />
+                                            </div>
                                         </div>
                                     </div>
-                                    <div :key="$root.userHeartbeatBar" class="col-3 col-md-4">
-                                        <HeartbeatBar size="small" :monitor-id="monitor.element.id" />
+                                </a>
+                                <div v-if="monitor.element.showChart" class="row">
+                                    <div v-if="showTags" class="tags">
+                                        <Tag v-for="tag in monitor.element.tags" :key="tag" :item="tag" :size="'sm'" />
+                                    </div>
+                                    <div class="box big-padding text-center monitor-stats">
+                                        <div class="row">
+                                            <div class="col">
+                                                <h5>{{ $t("Temps de réponse") }}</h5>
+                                                <p>({{ $t("Actuel") }})</p>
+                                                <CountUp :value="publicLastHeartbeatList[monitor.element.id].ping" />
+                                            </div>
+                                            <div class="col">
+                                                <h5>{{ $t("Temps de réponse") }}</h5>
+                                                <p>({{ $t("Moyen") }})</p>
+                                                <CountUp :value="publicAvgPingList[monitor.element.id]" />
+                                            </div>
+                                            <div class="col">
+                                                <h5>{{ $t("Disponibilité") }}</h5>
+                                                <p>({{ $t("24 heures") }})</p>
+                                                <span class="num"><Uptime :monitor="monitor.element" type="24" /></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="box big-padding text-center ping-chart-wrapper">
+                                        <div class="row">
+                                            <div class="col">
+                                                <PingChart :monitor-id="monitor.element.id" />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </template>
                     </Draggable>
                 </div>
@@ -79,10 +94,14 @@
 </template>
 
 <script>
+import { defineAsyncComponent } from "vue";
 import Draggable from "vuedraggable";
 import HeartbeatBar from "./HeartbeatBar.vue";
 import Uptime from "./Uptime.vue";
 import Tag from "./Tag.vue";
+const PingChart = defineAsyncComponent(() => import("./PingChart.vue"));
+import CountUp from "../components/CountUp.vue";
+
 
 export default {
     components: {
@@ -90,6 +109,8 @@ export default {
         HeartbeatBar,
         Uptime,
         Tag,
+        PingChart,
+        CountUp,
     },
     props: {
         /** Are we in edit mode? */
@@ -104,13 +125,33 @@ export default {
     },
     data() {
         return {
-
+            showPingChartBox: false,
         };
     },
     computed: {
         showGroupDrag() {
             return (this.$root.publicGroupList.length >= 2);
-        }
+        },
+
+        publicLastHeartbeatList() {
+            return this.$root.publicLastHeartbeatList;
+        },
+
+        publicAvgPingList() {
+            let list = {};
+            let sum = 0;
+            let len = 0;
+            for(let monitorId in this.$root.heartbeatList) {
+                if(this.$root.heartbeatList[monitorId]) {
+                    for(let object in this.$root.heartbeatList[monitorId]) {
+                        sum = sum + this.$root.heartbeatList[monitorId][object].ping;
+                        len = len + 1;
+                    }
+                    list[monitorId] = Math.round(sum/len);
+                }
+            }
+            return list;
+        },
     },
     created() {
 
@@ -133,33 +174,6 @@ export default {
         removeMonitor(groupIndex, index) {
             this.$root.publicGroupList[groupIndex].monitorList.splice(index, 1);
         },
-
-        /**
-         * Toggle the value of sendUrl
-         * @param {number} groupIndex Index of group monitor is member of
-         * @param {number} index Index of monitor within group
-         */
-        toggleLink(groupIndex, index) {
-            this.$root.publicGroupList[groupIndex].monitorList[index].sendUrl = !this.$root.publicGroupList[groupIndex].monitorList[index].sendUrl;
-        },
-
-        /**
-         * Should a link to the monitor be shown?
-         * Attempts to guess if a link should be shown based upon if
-         * sendUrl is set and if the URL is default or not.
-         * @param {Object} monitor Monitor to check
-         * @param {boolean} [ignoreSendUrl=false] Should the presence of the sendUrl
-         * property be ignored. This will only work in edit mode.
-         * @returns {boolean}
-         */
-        showLink(monitor, ignoreSendUrl = false) {
-            // We must check if there are any elements in monitorList to
-            // prevent undefined errors if it hasn't been loaded yet
-            if (this.$parent.editMode && ignoreSendUrl && Object.keys(this.$root.monitorList).length) {
-                return this.$root.monitorList[monitor.element.id].type === "http" || this.$root.monitorList[monitor.element.id].type === "keyword";
-            }
-            return monitor.element.sendUrl && monitor.element.url && monitor.element.url !== "https://" && !this.editMode;
-        },
     }
 };
 </script>
@@ -176,22 +190,6 @@ export default {
 
 .monitor-list {
     min-height: 46px;
-}
-
-.item-name {
-    padding-left: 5px;
-    padding-right: 5px;
-    margin: 0;
-    display: inline-block;
-}
-
-.btn-link {
-    color: #bbbbbb;
-    margin-left: 5px;
-}
-
-.link-active {
-    color: $primary;
 }
 
 .flip-list-move {
@@ -221,6 +219,33 @@ export default {
 .mobile {
     .item {
         padding: 13px 0 10px;
+    }
+}
+
+.sort {
+    margin: 0 auto;
+    width: 100px;
+}
+
+.openlink {
+    text-decoration: none;
+}
+
+.monitor-title {
+    font-size: 20px;
+    margin-bottom: 9px;
+}
+
+.monitor-stats p {
+    font-size: 13px;
+    color: #666;
+}
+
+.monitor-stats {
+    padding: 10px;
+
+    .col {
+        margin: 20px 0;
     }
 }
 
