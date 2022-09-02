@@ -2,13 +2,13 @@
     <transition name="slide-fade" appear>
         <div>
             <h1 class="mb-3">
-                {{ $t("Add New Status Page") }}
+                {{ $t("Ajouter une nouvelle page de statut") }}
             </h1>
 
             <form @submit.prevent="submit">
                 <div class="shadow-box">
                     <div class="mb-3">
-                        <label for="name" class="form-label">{{ $t("Name") }}</label>
+                        <label for="name" class="form-label">{{ $t("Nom") }}</label>
                         <input id="name" v-model="title" type="text" class="form-control" required>
                     </div>
 
@@ -20,17 +20,17 @@
                         </div>
                         <div class="form-text">
                             <ul>
-                                <li>{{ $t("Accept characters:") }} <mark>a-z</mark> <mark>0-9</mark> <mark>-</mark></li>
+                                <li>{{ $t("Caractères acceptés :") }} <mark>a-z</mark> <mark>0-9</mark> <mark>-</mark></li>
                                 <i18n-t tag="li" keypath="startOrEndWithOnly">
                                     <mark>a-z</mark> <mark>0-9</mark>
                                 </i18n-t>
-                                <li>{{ $t("No consecutive dashes") }} <mark>--</mark></li>
+                                <li>{{ $t("Pas de tirets consécutifs") }} <mark>--</mark></li>
                             </ul>
                         </div>
                     </div>
 
                     <div class="mt-2 mb-1">
-                        <button id="monitor-submit-btn" class="btn btn-primary w-100" type="submit" :disabled="processing">{{ $t("Next") }}</button>
+                        <button id="monitor-submit-btn" class="btn btn-primary w-100" type="submit" :disabled="processing">{{ $t("Suivant") }}</button>
                     </div>
                 </div>
             </form>
@@ -63,7 +63,7 @@ export default {
                 } else {
 
                     if (res.msg.includes("UNIQUE constraint")) {
-                        this.$root.toastError(this.$t("The slug is already taken. Please choose another slug."));
+                        this.$root.toastError(this.$t("Ce slug est déjà utilisé. Veuillez en choisir un autre."));
                     } else {
                         this.$root.toastRes(res);
                     }
